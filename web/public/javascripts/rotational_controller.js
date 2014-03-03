@@ -225,6 +225,7 @@ socket.on('altitude-change', function(data) {
 	iAltitude = data;
 	console.log( "Altitude: " + data );
 
+	/* e day e-day
 	if( iAltitude > MAX_DRONE_ALTITUDE && (rotKeyBlock == upKey || $('#btnRotForward').attr("pressed") == "pressed" ) )
 	{
 		sendRotation(commands.STOP);
@@ -232,5 +233,5 @@ socket.on('altitude-change', function(data) {
 	}
 	else if( isTooHigh && iAltitude < MAX_DRONE_ALTITUDE ) {
 		isTooHigh = false;
-	}
+	}*/
 });

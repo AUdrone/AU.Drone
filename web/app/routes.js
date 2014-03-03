@@ -62,7 +62,7 @@ module.exports = function(app, passport) {
 
 	app.get('/drone', isLoggedIn, function(req, res) {
 		res.render('drone', {
-			// user : req.user
+			user : req.user
 		});
 	});
 };
