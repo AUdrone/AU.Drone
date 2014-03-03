@@ -6,6 +6,11 @@
         <strong>password</strong>: <%= user.local.password %><br>
         <strong>administrator</strong>: <%= user.local.administrator %>
     </p>
+    <% if (user.local.administrator) { %>
+        <form action="http://localhost/signup">
+            <input type="submit" value="Signup">
+        </form>
+    <% } %>
     <head>
         <title>Parrot AR Drone 2.0 Web Control</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
