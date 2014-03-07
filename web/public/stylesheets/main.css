@@ -1,6 +1,10 @@
+body{
+	padding-top: 40px;
+}
+
 .vertical-center-container {
 	text-align: center;
-	height: 500px;
+	/*height: 500px;*/
 }
 
 .vertical-center-container:before {
@@ -23,6 +27,38 @@
 	height: 360px;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.videobg {
+	background: #303030;
+	padding-bottom: 10px;
+	border-color: #101010;
+}
+
+.videobg h3 {
+	color: #fefefe;
+}
+
+.currentData {
+	text-align: center;
+}
+
+.currentData ul{
+	display: inline-block;
+	list-style: none;
+	font-size: 20px;
+}
+
+.currentData ul li {
+	position: relative;
+	display: inline;
+	margin-right: 30px;
+}
+
+.databg {
+	background: #303030;
+	color: #fefefe;
+	border-bottom: solid #101010 2px;
 }
 
 .main-controller {
