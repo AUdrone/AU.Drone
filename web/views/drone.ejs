@@ -12,7 +12,7 @@
         </form>
     <% } %>
     <head>
-        <title>Parrot AR Drone 2.0 Web Control</title>
+        <title>AU.Drone Web Controller</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Bootstrap -->
         <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
@@ -31,20 +31,64 @@
         <![endif]-->
     </head>
     <body>
-      	<div class="vertical-center-container">
-    	  	<div class="main vertical-center">
-    	  		<div class="main-title">
-    	  			<h3>AR 2.0 Web Controller (Battery: <div style="display: inline" id="battery">100</div>%)
-                    </h3>
-    	  		</div>
+        <div class="navbar-wrapper">
+          <div class="container">
 
-    	  		<div id="main-video-feed">
-    				<!--<img src="http://audrone.eng.auburn.edu:8000" />-->
-    	  			<!--<div id="drone-status">
-      					<div id="drone-cardinal-status">Nothing</div>
-                        <div id="drone-rotational-status">Stable</div>
-    	  			</div>-->
-    	  		</div>
+            <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" rel="home" href="index.ejs" title="AU.Drone Web Controller">AU.Drone</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav">
+                    <li class="active"><a href="drone.ejs">Home</a></li>
+                    <li><a href="about.ejs">About</a></li>
+                    <li><a href="contact.ejs">Contact</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="videobg">
+          	<div class="vertical-center-container">
+        	  	<div class="main vertical-center">
+        	  		<div class="main-title">
+        	  			<h3>Live Video Feed</h3>
+        	  		</div>
+
+        	  		<div id="main-video-feed">
+        				<!--<img src="http://audrone.eng.auburn.edu:8000" />-->
+        	  			<!--<div id="drone-status">
+          					<div id="drone-cardinal-status">Nothing</div>
+                            <div id="drone-rotational-status">Stable</div>
+        	  			</div>-->
+        	  		</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="databg">
+            <div class="container data">
+                <div class="currentData">
+                    <ul>
+                        <li>Battery: <div style="display:inline" id="battery">100</div>%</li>
+                        <li>Altitude: <div style="display:inline" id="altitude">0</div> m</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="vertical-center-container">
+            <div class="main vertical-center">
 
                 <div id="errorMessage"></div>
 
@@ -116,6 +160,17 @@
     	  	</div>
     	</div>
 
+        <div class="container">
+          <!-- FOOTER -->
+          <footer>
+            <p class="pull-right"><a href="#">Back to top</a></p>
+            <p>&copy; 2014 Auburn University &middot; </p>
+          </footer>
+
+        </div><!-- /.container -->
+
+        <!-- Core Javascripts 
+        ====================================================================-->
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="/javascripts/jquery.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
