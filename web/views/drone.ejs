@@ -1,16 +1,5 @@
 <!DOCTYPE html>
 <html>
-    <p>
-        <strong>id</strong>: <%= user._id %><br>
-        <strong>username</strong>: <%= user.local.username %><br>
-        <strong>password</strong>: <%= user.local.password %><br>
-        <strong>administrator</strong>: <%= user.local.administrator %>
-    </p>
-    <% if (user.local.administrator) { %>
-        <form action="http://localhost/signup">
-            <input type="submit" value="Signup">
-        </form>
-    <% } %>
     <head>
         <title>AU.Drone Web Controller</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,8 +37,12 @@
                 <div class="navbar-collapse collapse">
                   <ul class="nav navbar-nav">
                     <li class="active"><a href="drone.ejs">Home</a></li>
-                    <li><a href="about.ejs">About</a></li>
-                    <li><a href="contact.ejs">Contact</a></li>
+                    <li><a href="http://localhost/">About</a></li>
+                    <li><a href="http://localhost/">Contact</a></li>
+                    <% if (user.local.administrator) { %>
+                        <li><a href="http://localhost/profile">Administrate</a></li>
+                    <% } %>
+                    <li><a href="http://localhost/logout">Logout</a></li>
                   </ul>
                 </div>
               </div>
