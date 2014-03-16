@@ -55,16 +55,11 @@ module.exports = function(app, passport) {
 		query.exec(function (err, users) {
   		if (err) return handleError(err);
 
-			res.render('profile.ejs', {
+			res.render('profile', {
 				user : req.user, // get the user out of session and pass to template
 				users : users // pass the result of the query
 			});
 		})
-
-		// res.render('profile.ejs', {
-		// 	user : req.user, // get the user out of session and pass to template
-		// 	users : allUsers
-		// });
 	});
 
 	// =====================================
@@ -78,6 +73,42 @@ module.exports = function(app, passport) {
 	app.get('/drone', isLoggedIn, function(req, res) {
 		res.render('drone', {
 			user : req.user
+		});
+	});
+
+	// Andrew added the two functions below.
+	app.patch('/user/:username', function(req, res) {
+		User.findOne({username : req.params.username}).exec(function(err, user) {
+			if (err) return handleError(err);
+
+			user.administrator = !(user.administrator);
+			user.save();
+
+			// force profile to reload users so they are fresh when I refresh the page in the profile.ejs jQuery function
+			User.find().exec(function (err, users) {
+	  		if (err) return handleError(err);
+
+				res.render('profile', {
+					user : req.user, // get the user out of session and pass to template
+					users : users // pass the result of the query
+				});
+			})
+		});
+	})
+
+	app.delete('/user/:username', function(req, res) {
+		User.remove({username : req.params.username}).exec(function(err, result) {
+			if (err) return handleError(err);
+
+			// force profile to reload users so they are fresh when I refresh the page in the profile.ejs jQuery function
+			User.find().exec(function (err, users) {
+	  		if (err) return handleError(err);
+
+				res.render('profile', {
+					user : req.user, // get the user out of session and pass to template
+					users : users // pass the result of the query
+				});
+			})
 		});
 	});
 };

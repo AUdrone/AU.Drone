@@ -7,6 +7,8 @@
 	<style>
 		body 		{ padding-top:80px; word-wrap:break-word; }
 	</style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+  </script>
 </head>
 <body>
 <div class="container">
@@ -27,7 +29,7 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li><a href="/drone">Drone</a></li>
-              <% if (user.local.administrator) { %>
+              <% if (user.administrator) { %>
                   <li class="active"><a href="/profile">Administrate</a></li>
               <% } %>
               <li><a href="/logout">Logout</a></li>
@@ -35,7 +37,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -48,14 +49,36 @@
 			<div class="col-sm-6">
 				<div class="well">
 						<p>
-							<!-- <strong>id</strong>: <%= user._id %><br> -->
-							<strong>username</strong>: <%= user.local.username %><br>
-							<strong>administrator</strong>: <%= user.local.administrator %><br>
+							<strong>username</strong>: <%= user.username %><br>
+							<strong>administrator</strong>: <%= user.administrator %><br>
+							<button id=<%= user.username %> type="button" class="btn btn-primary btn-xs" value="Admin">Admin</button>
+							<button id=<%= user.username %> type="button" class="btn btn-danger btn-xs" value="Delete">Delete</button>
 						</p>
 				</div>
 			</div>
 		<% }); %>
 	</div>
+
+	<script> 
+	  // THIS SCRIPT TAG MUST BE BELOW THE BUTTONS IT CALLS. DON'T QUESTION IT!!!!!!!
+	  $("button[value='Admin']").click(function() {
+			$.ajax({
+				type: 'PATCH',
+				url: '/user/' + $(this).attr('id')
+			}).done(function() {
+				location.reload(true);
+			})
+		});
+
+	  $("button[value='Delete']").click(function() {
+			$.ajax({
+	      type: 'DELETE',
+	      url: '/user/' + $(this).attr('id')
+	    }).done(function() {
+    		location.reload(true);
+  		})
+	  });
+	</script>
 
 </div>
 </body>
