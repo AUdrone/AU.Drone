@@ -44,17 +44,17 @@
 	</div>
 
 	<div class="row">
-		<!-- LOCAL INFORMATION -->
-		<div class="col-sm-6">
-			<div class="well">
-					<p>
-						<!-- <strong>id</strong>: <%= user._id %><br> -->
-						<strong>username</strong>: <%= user.local.username %><br>
-						<strong>password</strong>: <%= user.local.password %>
-					</p>
-
+		<% users.forEach(function(user) { %>
+			<div class="col-sm-6">
+				<div class="well">
+						<p>
+							<!-- <strong>id</strong>: <%= user._id %><br> -->
+							<strong>username</strong>: <%= user.local.username %><br>
+							<strong>administrator</strong>: <%= user.local.administrator %><br>
+						</p>
+				</div>
 			</div>
-		</div>
+		<% }); %>
 	</div>
 
 </div>
