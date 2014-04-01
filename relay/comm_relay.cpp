@@ -5,6 +5,8 @@
 #include <sys/socket.h> 
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <list>
@@ -58,11 +60,173 @@ int main(int argc, char **argv)
         return 0; 
     } 
 */ 
-    comm_relay cr; 
+//    comm_relay cr; 
     xb.setup();
-    while(1) { 
-	 cr.read();
+//	xb.sendMsg2('t');
+
+//	usleep(9000000);
+
+
+//Josh's poop
+/*
+int c;
+
+do {
+	c = getchar();
+
+	switch(c) {
+
+	case 't':
+	case 'l':
+		xb.sendMsg2(c);
+		break;
 	}
+} while (c != 'q');
+
+for(int i = 0; i < 15; i++) {
+	xb.sendMsg2('l');
+}
+*/
+//Charizard is the shit
+
+//Robert's stuff 
+
+	
+	struct addrinfo hints;
+	struct addrinfo *res;
+	socklen_t fromlen;
+	struct sockaddr_storage addr;
+	int bytes_received;
+	
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_flags = AI_PASSIVE;
+
+	if(0 != getaddrinfo(NULL, "4710", &hints, &res)) {
+		cout << "getaddrinfo ERROR" << endl;
+		exit(1);
+	}
+
+	int sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	
+	if (-1 == sockfd) {
+		cout << "socket ERROR" << endl;
+		exit(1);
+	}
+
+	if(-1 == bind(sockfd, res->ai_addr, res->ai_addrlen)) {
+		cout << "binding ERROR" << endl;
+		exit(1);
+	}
+	
+	fromlen = sizeof addr;
+	char commandBuffer[2];
+	int command;	
+
+	int c;
+
+	do {
+	cout << "receiving" << endl;
+//	bytes_received = recvfrom(sockfd, (char*) &commandBuffer, sizeof(int), 0, (sockaddr*) &addr, &fromlen);
+	 bytes_received = recvfrom(sockfd, commandBuffer, sizeof commandBuffer, 0, (sockaddr*) &addr, &fromlen);
+	if (bytes_received > 1) {
+	command = atoi(commandBuffer);
+	}
+	else {
+		command = (uint8_t) commandBuffer[0];
+		command = command - 48;
+	}
+//	command = ntohl(command);
+	cout << "bytes received " << bytes_received << endl;
+	cout << "received " << command << endl; 
+		//c = getchar(); 
+	
+	if (command == 0) {
+		cout << "forward" << endl;
+		xb.sendMsg2('w');
+	}
+
+	if (command == 1) {
+		cout << "backward" << endl;
+		xb.sendMsg2('s');
+	}
+	
+	if (command == 2) {
+		cout << "left" << endl;
+		xb.sendMsg2('a');
+	}
+
+	if (command == 3) {
+		cout << "right" << endl;
+		xb.sendMsg2('d');
+	}
+
+	if (command == 4) {
+		cout << "up" << endl;
+		xb.sendMsg2('g');
+	}
+
+	if (command == 5) {
+		cout << "down" << endl;
+		xb.sendMsg2('b');
+	}
+
+	if (command == 6) {
+		cout << "rotate left" << endl;
+		xb.sendMsg2('v');
+	}
+
+	if (command == 7) {
+		cout << "rotate right" << endl;
+		xb.sendMsg2('n');
+	}
+
+	if(command == 8) {
+		cout << "IIIIIII just wanna fly" << endl;
+		for (int y = 0; y < 2; y++) {
+		xb.sendMsg2('t');
+		xb.sendMsg2('t');
+		}
+	}
+	
+	if(command == 9) {
+		cout << "landing" << endl;
+		xb.sendMsg2('l');
+	}
+
+	if(command == 10) {
+		cout << "hovering" << endl;
+		xb.sendMsg2('h');
+		xb.sendMsg2('h');
+	}
+
+	} while (commandBuffer[0] != 'b');
+
+
+//Robert's stuff 
+
+
+
+		/*switch(commandBuffer[0]) {
+
+			case '8':
+			xb.sendMsg2('t');
+			break;
+		}*/
+//	} while (commandBuffer[0] != '9');
+	
+
+/*	for(int i = 0; i < 15; i++) {
+
+	xb.sendMsg2('l');
+	} 
+*/
+//	cr.udpThread();
+ 
+  //  while(1) { 
+  //	 cr.read();
+  //	}
 /*    mavlink_message_t message;
     int takeoff = 0;
 */
@@ -198,21 +362,21 @@ void comm_relay::receiveCommand(struct COMMAND c) {
   //        vidThreads[c.droneid].start();
             cerr << "Setting drone id to: " << c.droneid << std::endl;
    //       emit sendCommand(c);
-            comm_relay::sendCommand(c);		
+//            comm_relay::sendCommand(c);		
 
 	    //adam test
-	    c.cmdid = TAKEOFF_COMMAND;
+//	    c.cmdid = TAKEOFF_COMMAND;
 	    //c.param1++; 
 	//	for( int i=0; i<10000; i++ ) {
 	
-	    comm_relay::sendCommand(c);
+//	    comm_relay::sendCommand(c);
 	//	std::cout << "passed takeoff";
 	//	}
 	    //comm_relay::sendCommand(c);
-	//	sleep(2);
-		std::cout << "passed sleep";
-	    c.cmdid = LAND_COMMAND;
-	    comm_relay::sendCommand(c);
+//	usleep(1000);
+//		std::cout << "passed sleep";
+//	    c.cmdid = LAND_COMMAND;
+//	    comm_relay::sendCommand(c);
 
         break;
     default:
@@ -249,22 +413,82 @@ int comm_relay::udpThread(){
         return 0; 
     } 
 
-	mavlink_message_t message;
+//	mavlink_message_t message;
 	int takeoff = 0;
-
+	char commandToSend;
 	while(1) 
     { 
-        cout<<"Waiting on port: "<<PORT<<"\n"; 
+//        cout<<"Waiting on port: "<<PORT<<"\n"; 
         recvlen = recvfrom(fd, buf, BUFSIZE, 0, (struct sockaddr *)&remaddr, &addrlen); 
-        cout<<"Received "<<recvlen<<" bytes on port: "<<PORT<<"\n"; 
+ //       cout<<"Received "<<recvlen<<" bytes on port: "<<PORT<<"\n"; 
         if(recvlen > 0) 
         { 
             buf[recvlen] = 0; 
             cout<<"Received message: "<<buf<<"\n";
-          
-	    mavlink_msg_cmdmsg_pack(0, 0, &message, 0, takeoff++, 0, 0, 0, 0);
-            
-	    if (message.len > 0) {
+	cout << "buf[0] = " << buf[0] << "\n";            
+		
+
+		//the commandIndex now indicates the postion of the numeric command sent
+
+	    switch(buf[0]) {
+		
+		case '0':
+		commandToSend = 'w'; 
+		break;
+		
+		case '1':
+		commandToSend = 's';
+		break;
+		
+		case '2':
+		commandToSend = 'a';
+		break;
+
+		case '3':
+		commandToSend = 'd';
+		break;
+
+		case '4': 
+		commandToSend = 'h'; /////////////////////////set to hover needs to be ascend
+		break;
+
+		case '5':
+		commandToSend = 'h'; //////////////////////////set to hover, needs to be descend
+		break;
+
+		case '6':
+		commandToSend = 'h'; ///////////////////////////set to hover, needs to be rotate left
+		break;
+
+		case '7':
+		commandToSend = 'h'; /////////////////////////////set to hover, needs to be rotate right
+		break;
+
+		case '8':
+		commandToSend = 't';
+		break;
+
+		case '9':
+		commandToSend = 'l';
+		break;
+
+		default:
+		commandToSend = 'h'; /////////////problem we only have 10 ascii characters to work with, darn
+		break;
+	    }
+
+//	    mavlink_msg_cmdmsg_pack(0, 0, &message, 0, takeoff++, 0, 0, 0, 0);
+
+		try{
+		    xb.sendMsg2(commandToSend);
+			std::cout << "tried to send " << commandToSend << "\n";	
+                } catch (int i) {
+			cout << "fatal error\n";
+		    if (xb.handleError(i) == FATAL_ERROR) {
+		    throw FATAL_ERROR;
+		    }
+		}
+/*	    if (message.len > 0) {
 		try {
 		    xb.sendMsg(message);
 		    cout << "Message Sent to XBee: " << message.len << endl;
@@ -273,7 +497,7 @@ int comm_relay::udpThread(){
 			throw FATAL_ERROR;
 		    }
 		}
-	    }
+	    }*/
         } 
     }
     close (fd);	 

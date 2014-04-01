@@ -22,7 +22,7 @@ module.exports = function(app, passport) {
 
 	// process the login form
 	app.post('/login', passport.authenticate('local-login', {
-		successRedirect : '/drone', // redirect to the secure profile section
+		successRedirect : '/drone', // redirect to the secure drone section
 		failureRedirect : '/login', // redirect back to the signup page if there is an error
 		failureFlash : true // allow flash messages
 	}));
@@ -39,7 +39,7 @@ module.exports = function(app, passport) {
 
 	// process the signup form
 	app.post('/signup', passport.authenticate('local-signup', {
-		successRedirect : '/drone', // redirect to the secure profile section
+		successRedirect : '/drone', // redirect to the secure drone section
 		failureRedirect : '/signup', // redirect back to the signup page if there is an error
 		failureFlash : true // allow flash messages
 	}));
@@ -49,13 +49,13 @@ module.exports = function(app, passport) {
 	// =====================================
 	// we will want this protected so you have to be logged in to visit
 	// we will use route middleware to verify this (the isLoggedIn function)
-	app.get('/profile', isLoggedIn, function(req, res) {
+	app.get('/administrate', isLoggedIn, function(req, res) {
 		// Andrew added these lines
 		var query = User.find();
 		query.exec(function (err, users) {
   		if (err) return handleError(err);
 
-			res.render('profile', {
+			res.render('administrate', {
 				user : req.user, // get the user out of session and pass to template
 				users : users // pass the result of the query
 			});
@@ -77,18 +77,18 @@ module.exports = function(app, passport) {
 	});
 
 	// Andrew added the two functions below.
-	app.patch('/user/:username', function(req, res) {
+	app.patch('/user/:username/administrator', function(req, res) {
 		User.findOne({username : req.params.username}).exec(function(err, user) {
 			if (err) return handleError(err);
 
 			user.administrator = !(user.administrator);
 			user.save();
 
-			// force profile to reload users so they are fresh when I refresh the page in the profile.ejs jQuery function
+			// force administrate to reload users so they are fresh when I refresh the page in the administrate.ejs jQuery function
 			User.find().exec(function (err, users) {
 	  		if (err) return handleError(err);
 
-				res.render('profile', {
+				res.render('administrate', {
 					user : req.user, // get the user out of session and pass to template
 					users : users // pass the result of the query
 				});
@@ -96,15 +96,25 @@ module.exports = function(app, passport) {
 		});
 	})
 
+	app.get('/user/:username/password', function(req, res) {
+		User.findOne({username : req.params.username}).exec(function(err, user) {
+			if (err) return handleError(err);
+			
+			res.render('change_password', {
+				user : user
+			})
+		})
+	})
+
 	app.delete('/user/:username', function(req, res) {
 		User.remove({username : req.params.username}).exec(function(err, result) {
 			if (err) return handleError(err);
 
-			// force profile to reload users so they are fresh when I refresh the page in the profile.ejs jQuery function
+			// force administrate to reload users so they are fresh when I refresh the page in the administrate.ejs jQuery function
 			User.find().exec(function (err, users) {
 	  		if (err) return handleError(err);
 
-				res.render('profile', {
+				res.render('administrate', {
 					user : req.user, // get the user out of session and pass to template
 					users : users // pass the result of the query
 				});

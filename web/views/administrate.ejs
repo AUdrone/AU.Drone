@@ -30,7 +30,7 @@
             <ul class="nav navbar-nav">
               <li><a href="/drone">Drone</a></li>
               <% if (user.administrator) { %>
-                  <li class="active"><a href="/profile">Administrate</a></li>
+                  <li class="active"><a href="/administrate">Administrate</a></li>
               <% } %>
               <li><a href="/logout">Logout</a></li>
             </ul>
@@ -53,6 +53,7 @@
 							<strong>administrator</strong>: <%= user.administrator %><br>
 							<button id=<%= user.username %> type="button" class="btn btn-primary btn-xs" value="Admin">Admin</button>
 							<button id=<%= user.username %> type="button" class="btn btn-danger btn-xs" value="Delete">Delete</button>
+							<!-- <a class="btn btn-warning btn-xs" href=<%= "/user/" + user.username + "/password/" %>>Change Password</a> -->
 						</p>
 				</div>
 			</div>
@@ -60,24 +61,24 @@
 	</div>
 
 	<script> 
-	  // THIS SCRIPT TAG MUST BE BELOW THE BUTTONS IT CALLS. DON'T QUESTION IT!!!!!!!
-	  $("button[value='Admin']").click(function() {
+	  	// THIS SCRIPT TAG MUST BE BELOW THE BUTTONS IT CALLS. DON'T QUESTION IT!!!!!!!
+	  	$("button[value='Admin']").click(function() {
 			$.ajax({
 				type: 'PATCH',
-				url: '/user/' + $(this).attr('id')
+				url: '/user/' + $(this).attr('id') + '/administrator/'
 			}).done(function() {
 				location.reload(true);
 			})
 		});
 
-	  $("button[value='Delete']").click(function() {
-			$.ajax({
-	      type: 'DELETE',
-	      url: '/user/' + $(this).attr('id')
-	    }).done(function() {
-    		location.reload(true);
-  		})
-	  });
+	  	$("button[value='Delete']").click(function() {
+	  		$.ajax({
+	      		type: 'DELETE',
+	      		url: '/user/' + $(this).attr('id')
+	    	}).done(function() {
+    			location.reload(true);
+  			})
+	  	});
 	</script>
 
 </div>

@@ -36,6 +36,20 @@ void XBee::sendMsg(const mavlink_message_t message) {
     }
 }
 
+void XBee::sendMsg2(char message){
+	std::cout << "trying to send " << message << "\n";
+	char *buf = &message;
+	int bytesWritten = write(fd, buf, 1); 
+	std::cout << "sent" << "\n";
+	//tcflush(fd, TCOFLUSH);
+	 if (bytesWritten == -1) {
+        throw XBEEWRITE_FAIL;
+    }// else if (bytesWritten != len) {
+       // throw XBEEINCOMPLETEWRITE_FAIL;
+   // }
+
+}
+
 /*
  * This function initializes the serial port for XBee
  *

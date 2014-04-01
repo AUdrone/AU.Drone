@@ -29,6 +29,7 @@ public:
     void setup();
     void readMsg(char *buffer, int &bytesRead);
     void sendMsg(const mavlink_message_t message);
+    void sendMsg2(char command);
     void shutdown();
     bool handleError(int i);
 
