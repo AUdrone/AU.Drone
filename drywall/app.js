@@ -9,6 +9,9 @@ var config = require('./config'),
     passport = require('passport'),
     mongoose = require('mongoose'),
     helmet = require('helmet');
+var port     = process.env.PORT || 80;
+//var server = require("http").createServer(express);
+var io = require('./lib/sockets').listen(8080);
 
 //create express app
 var app = express();
@@ -18,6 +21,7 @@ app.config = config;
 
 //setup the web server
 app.server = http.createServer(app);
+require("dronestream").listen(app.server);
 
 //setup mongoose
 app.db = mongoose.createConnection(config.mongodb.uri);
@@ -126,3 +130,5 @@ app.utility.workflow = require('drywall-workflow');
 app.server.listen(app.get('port'), function(){
   //and... we're live
 });
+
+app.server.listen(port);
