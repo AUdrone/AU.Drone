@@ -32,28 +32,31 @@ module.exports = function(passport) {
     // by default, if there was no name, it would just be called 'local'
 
     passport.use('local-signup', new LocalStrategy({
+        // by default, local strategy uses username and password, we will override with email
+        usernameField : 'email',
+        passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, username, password, done) {
+    function(req, email, password, done) {
 
-        // find a user whose username is the same as the forms username
+        // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ username :  username }, function(err, user) {
+        User.findOne({ email :  email }, function(err, user) {
             // if there are any errors, return the error
             if (err)
                 return done(err);
 
-            // check to see if theres already a user with that username
+            // check to see if theres already a user with that email
             if (user) {
-                return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+                return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
             } else {
 
-                // if there is no user with that username
+                // if there is no user with that email
                 // create the user
                 var newUser            = new User();
 
                 // set the user's local credentials
-                newUser.username = username;
+                newUser.email = email;
                 newUser.password = newUser.generateHash(password);
 
                 // save the user
@@ -75,13 +78,16 @@ module.exports = function(passport) {
     // by default, if there was no name, it would just be called 'local'
 
     passport.use('local-login', new LocalStrategy({
+        // by default, local strategy uses username and password, we will override with email
+        usernameField : 'email',
+        passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, username, password, done) { // callback with username and password from our form
+    function(req, email, password, done) { // callback with email and password from our form
 
-        // find a user whose username is the same as the forms username
+        // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ username :  username }, function(err, user) {
+        User.findOne({ email :  email }, function(err, user) {
             // if there are any errors, return the error before anything else
             if (err)
                 return done(err);

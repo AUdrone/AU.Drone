@@ -70,15 +70,15 @@ module.exports = function(app, passport) {
 		res.redirect('/');
 	});
 
+	// Andrew added the functions below.
 	app.get('/drone', isLoggedIn, function(req, res) {
 		res.render('drone', {
 			user : req.user
 		});
 	});
 
-	// Andrew added the two functions below.
-	app.patch('/user/:username/administrator', function(req, res) {
-		User.findOne({username : req.params.username}).exec(function(err, user) {
+	app.patch('/user/:email/administrator', function(req, res) {
+		User.findOne({email : req.params.email}).exec(function(err, user) {
 			if (err) return handleError(err);
 
 			user.administrator = !(user.administrator);
@@ -96,8 +96,8 @@ module.exports = function(app, passport) {
 		});
 	})
 
-	app.get('/user/:username/password', function(req, res) {
-		User.findOne({username : req.params.username}).exec(function(err, user) {
+	app.get('/user/:email/password', function(req, res) {
+		User.findOne({email : req.params.email}).exec(function(err, user) {
 			if (err) return handleError(err);
 			
 			res.render('change_password', {
@@ -106,8 +106,8 @@ module.exports = function(app, passport) {
 		})
 	})
 
-	app.delete('/user/:username', function(req, res) {
-		User.remove({username : req.params.username}).exec(function(err, result) {
+	app.delete('/user/:email', function(req, res) {
+		User.remove({email : req.params.email}).exec(function(err, result) {
 			if (err) return handleError(err);
 
 			// force administrate to reload users so they are fresh when I refresh the page in the administrate.ejs jQuery function
@@ -119,6 +119,12 @@ module.exports = function(app, passport) {
 					users : users // pass the result of the query
 				});
 			})
+		});
+	});
+
+	app.get('/profile', isLoggedIn, function(req, res) {
+		res.render('profile', {
+			user : req.user // get the user out of session and pass to template
 		});
 	});
 };
