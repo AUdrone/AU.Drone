@@ -1,4 +1,0 @@
-AU.Drone
-========
-
-Senior Design
