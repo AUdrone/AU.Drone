@@ -1,6 +1,8 @@
 'use strict';
 
 //dependencies
+var port = process.env.PORT || 80;
+
 var config = require('./config'),
     express = require('express'),
     mongoStore = require('connect-mongo')(express),
@@ -9,9 +11,9 @@ var config = require('./config'),
     passport = require('passport'),
     mongoose = require('mongoose'),
     helmet = require('helmet');
-var port     = process.env.PORT || 80;
-//var server = require("http").createServer(express);
+
 var io = require('./lib/sockets').listen(8080);
+var jsmpeg = require('./lib/wc-stream');
 
 //create express app
 var app = express();

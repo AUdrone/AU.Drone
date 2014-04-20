@@ -23,8 +23,14 @@
     "bcrypt": "~0.7.7",
     "socket.io" : "0.9.x",
     "dronestream" : "1.1.x",
-    "ar-drone" : "0.3.x"
+    "ar-drone" : "0.3.x",
+    "ws" : "0.4.x"
   },
+  "bundledDependencies": [
+    "drywall-sendmail",
+    "drywall-slugify",
+    "drywall-workflow"
+  ], 
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.4.0",
