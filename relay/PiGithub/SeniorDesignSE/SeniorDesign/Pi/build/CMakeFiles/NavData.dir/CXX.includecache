@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/ConstantsAndHeaders.h
+stdint.h
+-
+
+../include/NavData.h
+sys/socket.h
+-
+netinet/in.h
+-
+arpa/inet.h
+-
+stdio.h
+-
+stdlib.h
+-
+errno.h
+-
+string.h
+-
+netdb.h
+-
+fcntl.h
+-
+ConstantsAndHeaders.h
+../include/ConstantsAndHeaders.h
+
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/src/NavData.cpp
+NavData.h
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/src/NavData.h
+

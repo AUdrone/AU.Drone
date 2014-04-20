@@ -1,0 +1,2 @@
+/usr/bin/ar cr libXBee.a  CMakeFiles/XBee.dir/src/XBee.cpp.o CMakeFiles/XBee.dir/src/Pi.cpp.o CMakeFiles/XBee.dir/src/Navigation.cpp.o
+/usr/bin/ranlib libXBee.a

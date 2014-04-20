@@ -1,0 +1,2 @@
+/usr/bin/ar cr libNavData.a  CMakeFiles/NavData.dir/src/NavData.cpp.o
+/usr/bin/ranlib libNavData.a

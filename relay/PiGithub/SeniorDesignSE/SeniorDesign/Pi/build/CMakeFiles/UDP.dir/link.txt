@@ -1,0 +1,2 @@
+/usr/bin/ar cr libUDP.a  CMakeFiles/UDP.dir/src/UDP.cpp.o
+/usr/bin/ranlib libUDP.a

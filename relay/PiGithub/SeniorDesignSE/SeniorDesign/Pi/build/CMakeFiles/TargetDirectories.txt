@@ -1,0 +1,4 @@
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/build/CMakeFiles/NavData.dir
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/build/CMakeFiles/UDP.dir
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/build/CMakeFiles/XBee.dir
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/build/CMakeFiles/main.dir

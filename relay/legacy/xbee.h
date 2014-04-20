@@ -21,6 +21,15 @@
 #define XBEE_VENDORID "0403"
 #define XBEE_PRODUCTID "6001"
 
+//struct NavdataFromPi{
+struct __attribute__ ((__packed__)) NavdataFromPi {
+        uint8_t batteryPower;
+        uint32_t altitude;
+//        float vy;
+//        float vx;
+//        float vz;
+};
+
 class XBee
 {
 public:
@@ -28,6 +37,7 @@ public:
     ~XBee();
     void setup();
     void readMsg(char *buffer, int &bytesRead);
+    void readMsg2(NavdataFromPi &buffer, int &bytesRead);
     void sendMsg(const mavlink_message_t message);
     void sendMsg2(char command);
     void shutdown();

@@ -1,0 +1,63 @@
+/**
+* XBee (Pi side)
+* 
+* Communication protocol for Pi
+* Has access to the Pi via Pi*
+* Calls Pi functions go get data, builds into packets, and sends
+**/
+
+#ifndef _XBEE_H_
+#define _XBEE_H_
+
+#include "Pi.h"
+#include "mavlink/common/mavlink.h"
+#include "ConstantsAndHeaders.h"
+#include <iostream>
+#include <unistd.h>
+#include <termios.h>
+#include "fcntl.h"
+#include "sys/stat.h"
+#include <ctime>
+#include <vector>
+#include <iterator>
+
+/*
+#define MAVLINK_MSG_ACK 151
+#define MAVLINK_MSG_CMDMSG 152
+#define MAVLINK_MSG_CONNECT 150
+*/
+
+using std::cout;
+using std::string;
+using std::iterator;
+
+
+class XBee 
+{
+public:
+	XBee();
+	void setup(); //initalizes Pi communication, calls setupPort(), openPort(), and connect()
+	
+
+	void shutdown(); //shuts down xbee port
+private:
+	Pi pi;
+	int droneNumber;
+	int mapNumber;
+	string port;
+	int baud;
+	int fd;
+	int sequenceNumber;
+	bool setupPort(); //sets up port for Xbee
+	void openPort(); //opens the port
+	void closePort(); //closes xbee port
+	void sendAck(int seqNum); //passes the packed packet to sendAck, which sends it
+	void sendConnect(); //sends connect message to GCS
+	void sendCommand(mavlink_cmdmsg_t cmdmsg); //sends command to Pi class NOT IMPLEMENTED 
+	void run(); //run loop, checks for packets, reads, handles them
+	void xBeeResponseLoop();
+	void navDataLoop();
+	void sendNavData(navdata_demo theNavData);
+};
+
+#endif

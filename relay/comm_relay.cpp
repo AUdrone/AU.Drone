@@ -10,17 +10,30 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <list>
-
+#include <pthread.h>
+#include <cerrno>
+#include <netinet/in.h>
 #include "legacy/xbee.h"
 
 #define PORT 4710 
 #define BUFSIZE 2048 
 #define XBEEPACKET_SLEEP_TIME 1000.0
+
   
 using namespace std;
 
 XBee xb;
 char mavlinkBuffer[MAX_BUFF_LEN];
+
+/*
+struct __attribute__ ((__packed__)) NavdataFromPi {
+	uint8_t batteryPower;
+	uint32_t altitude;
+	float vy;
+	float vx;
+	float vz;
+};
+*/
 
 class comm_relay
 {
@@ -30,6 +43,8 @@ class comm_relay
 		void receiveCommand(struct COMMAND c);
 		int udpThread();
 };
+
+
 
 int main(int argc, char **argv) 
 { 
@@ -96,40 +111,106 @@ for(int i = 0; i < 15; i++) {
 	struct addrinfo *res;
 	socklen_t fromlen;
 	struct sockaddr_storage addr;
-	int bytes_received;
+	int bytes_received = 0;
+	int navdata_bytes_received = 0;
 	
+	//flush out the details of the socket
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_flags = AI_PASSIVE;
+	
+	//tell the socket where to send navdata (loopback)
+	struct sockaddr_in their_addr;
+	their_addr.sin_family = AF_INET;
+	their_addr.sin_port = htons(4711);
+	inet_pton(AF_INET, "127.0.0.1", &(their_addr.sin_addr));
+	memset(their_addr.sin_zero, '\0', sizeof(their_addr.sin_zero));
 
+	//get the address infor for socket
 	if(0 != getaddrinfo(NULL, "4710", &hints, &res)) {
 		cout << "getaddrinfo ERROR" << endl;
 		exit(1);
 	}
 
+	//make the socket
 	int sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	
+	//make sure socket is valid
 	if (-1 == sockfd) {
 		cout << "socket ERROR" << endl;
 		exit(1);
 	}
 
+	//bind the socket
 	if(-1 == bind(sockfd, res->ai_addr, res->ai_addrlen)) {
 		cout << "binding ERROR" << endl;
 		exit(1);
 	}
 	
+	//set the length of the timeout for the socket
+	struct timeval timeout;
+	timeout.tv_sec = 1; //seconds
+	timeout.tv_usec = 0; //microseconds
+	
+	//change the socket to allow timeouts
+	if(0 > setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout))) {
+		cout << "setsockopt ERROR!" << endl;
+		exit(1);
+	}
+
 	fromlen = sizeof addr;
 	char commandBuffer[2];
 	int command;	
-
+//	NavdataFromPi navPi;
+//	memset(&navPi, 0, sizeof(navPi));
+//	char *nav = (char*) malloc(1); //17 is the size of the navdata packets we are receiving
+//	memset(&nav, 0, sizeof(nav));
+	int xbeeBytesRead = 0;
+//	char *nav;
+	NavdataFromPi nav;
+//	navjoshuat nav[1];
+	nav.altitude = 4;
+	uint8_t tempBatPower;
 	int c;
 
+	/*
+	*begin loops to read commands from the website,
+	*read navdata from the raspberry pi, and send navdata
+	*back to the server.
+	*/
+
 	do {
-	cout << "receiving" << endl;
-//	bytes_received = recvfrom(sockfd, (char*) &commandBuffer, sizeof(int), 0, (sockaddr*) &addr, &fromlen);
-	 bytes_received = recvfrom(sockfd, commandBuffer, sizeof commandBuffer, 0, (sockaddr*) &addr, &fromlen);
+//	cout << "receiving" << endl;
+	
+	do {	
+		xbeeBytesRead = 0;
+		bytes_received = 0;
+		errno = 0;
+	//	bytes_received = recvfrom(sockfd, (char*) &commandBuffer, sizeof(int), 0, (sockaddr*) &addr, &fromlen);
+		xb.readMsg2(nav, xbeeBytesRead); //read from the xbee to get navdata
+	//	xbeeBytesRead = read(fd, (char*) &nav, sizeof(nav));
+		
+		//if we received something, send it back to the server
+		if(xbeeBytesRead > 0) {
+			cout << "Gottttttttttttttttt" << endl;
+			cout << "XbeeBytesRead: " << xbeeBytesRead << endl;
+			//tempBatPower = (uint8_t) nav[0];
+			cout << "Battery Power: " << int(nav.batteryPower) << endl;
+			cout << "Altitude: " << uint32_t(nav.altitude) << endl;
+			if(-1 == sendto(sockfd, &nav, sizeof(nav), 0, (struct sockaddr *) &their_addr, sizeof(their_addr))) {
+				cout << "sendto ERROR" << endl;
+				exit(1);
+			}
+
+		//	cout << "Batter Power2: " << nav << endl;
+		}
+		
+		//try to get a command from the website. if none is sent, timeout.
+		//else process the command
+		bytes_received = recvfrom(sockfd, commandBuffer, sizeof commandBuffer, 0, (sockaddr*) &addr, &fromlen);
+	} while(-1 == bytes_received); 
+
 	if (bytes_received > 1) {
 	command = atoi(commandBuffer);
 	}
@@ -138,8 +219,8 @@ for(int i = 0; i < 15; i++) {
 		command = command - 48;
 	}
 //	command = ntohl(command);
-	cout << "bytes received " << bytes_received << endl;
-	cout << "received " << command << endl; 
+//	cout << "bytes received " << bytes_received << endl;
+//	cout << "received " << command << endl; 
 		//c = getchar(); 
 	
 	if (command == 0) {
@@ -201,6 +282,16 @@ for(int i = 0; i < 15; i++) {
 		xb.sendMsg2('h');
 	}
 
+	if(command == 15 ) { //emergency mode
+		cout << "stop emergency mode" << endl;
+		xb.sendMsg2('k');
+	}
+
+	if(command == 16) { //switch camera
+		cout << "changing camera view" << endl;
+		xb.sendMsg2('c');
+	}
+
 	} while (commandBuffer[0] != 'b');
 
 
@@ -260,6 +351,7 @@ for(int i = 0; i < 15; i++) {
 */
     return 0; 
 }
+
 
 void comm_relay::sendCommand(struct COMMAND c) {
     mavlink_message_t message;

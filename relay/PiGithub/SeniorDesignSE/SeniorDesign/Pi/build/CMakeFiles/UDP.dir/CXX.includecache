@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/ConstantsAndHeaders.h
+stdint.h
+-
+
+../include/UDP.h
+sys/socket.h
+-
+netinet/in.h
+-
+arpa/inet.h
+-
+stdio.h
+-
+stdlib.h
+-
+errno.h
+-
+string.h
+-
+netdb.h
+-
+fcntl.h
+-
+ConstantsAndHeaders.h
+../include/ConstantsAndHeaders.h
+iostream
+-
+
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/src/UDP.cpp
+UDP.h
+/home/pi/SeniorDesignSE/SeniorDesign/Pi/src/UDP.h
+

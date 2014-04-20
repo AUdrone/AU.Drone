@@ -20,6 +20,25 @@ void XBee::readMsg(char *buffer, int &bytesRead) {
     }
 }
 
+void XBee::readMsg2(NavdataFromPi &buffer, int &bytesRead) {
+	//std::cout << "before read " << buffer.altitude;
+	char buff[1000];
+	buffer.batteryPower = -1;
+	buffer.altitude = -1;
+	bytesRead = read(fd, (char *)&buffer, sizeof(buffer));
+	std::cout << "bytes read: " << bytesRead << std::endl;
+	buff[bytesRead] = '\0';
+//	for (int i = 0; i < bytesRead; i++) {
+//		std::cout << std::hex << buff[i];
+//	}
+	std::cout << (int)buffer.batteryPower << " " << buffer.altitude;
+	std::cout << std::endl << std::endl;
+	//std::cout << "after read " << buffer.altitude;
+	if(bytesRead == -1) {
+	std::cout << "read error" << std::endl;
+	}
+}
+
 /*
  * This function sends message over XBee using mavlink headers
  *
