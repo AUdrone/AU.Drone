@@ -166,6 +166,7 @@ exports = module.exports = function(app, passport) {
 
   //account > drone
   app.get('/drone/', require('./views/account/drone/index').init);
+  app.get('/drone/', require('./views/admin/drone/index').init);
 
   //route not found
   app.all('*', require('./views/http/index').http404);

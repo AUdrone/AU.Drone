@@ -1,0 +1,143 @@
+        <div class="videobg">
+            <div class="vertical-center-container">
+                <div class="main vertical-center">
+                    <div class="main-title">
+                        <h3>Live Video Feed</h3>
+                    </div>
+
+                    <div id="main-video-feed">
+                        <!--<img src="http://audrone.eng.auburn.edu:8000" />-->
+                        <!--<div id="drone-status">
+                            <div id="drone-cardinal-status">Nothing</div>
+                            <div id="drone-rotational-status">Stable</div>
+                        </div>-->
+                    </div>
+
+			<canvas id="videoCanvas" width="320" height="240">
+				<p>
+					Please use a browser tha supports the Canvas Element, like
+					<a href="http://www.google.com/chrome">Chrome</a>,
+					<a href="http://www.mozilla.com/firefox/">Firefox</a>,
+					<a href="http://www.apple.com/safari/">Safari</a> or Internet Explorer 10
+				</p>
+			</canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="databg">
+            <div class="container data">
+                <div class="currentData">
+                    <ul>
+                        <li>Battery: <div style="display:inline" id="battery">100</div>%</li>
+                        <li>Altitude: <div style="display:inline" id="altitude">0</div> m</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="vertical-center-container">
+            <div class="main vertical-center">
+
+                <div id="errorMessage"></div>
+
+                <div class="main-controller">
+                    <div id="takeoff-controls">
+                        <div class="row">
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <button class="col-xs-4 col-xs-offset-4 btn btn-primary controller-btn" id="takeoff">Take Off</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="landing-controls">
+                        <div class="row">
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <button class="col-xs-4 col-xs-offset-4 btn btn-primary controller-btn" id="land">Land</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="flight-controls">
+                        <div id="flight-cardinal-controls">
+                            <h4>Cardinal Controls</h4>
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <button class="btn btn-primary controller-move-btn" id="btnUp">Up</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <button class="btn btn-primary controller-move-btn" id="btnLeft">Left</button>
+                                    <button class="btn btn-danger controller-move-btn" id="btnHover">Hover</button>
+                                    <button class="btn btn-primary controller-move-btn" id="btnRight">Right</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <button class="btn btn-primary controller-move-btn" id="btnDown">Down</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="flight-rotational-controls">
+                            <h4>Rotational Controls</h4>
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <button class="btn btn-primary controller-rotate-btn" id="btnRotForward">Forward</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <button class="btn btn-primary controller-rotate-btn" id="btnRotLeft">Left</button>
+                                    <button class="btn btn-danger controller-rotate-btn" id="btnStable">Stable</button>
+                                    <button class="btn btn-primary controller-rotate-btn" id="btnRotRight">Right</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <button class="btn btn-primary controller-rotate-btn" id="btnRotBack">Back</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+          <!-- FOOTER -->
+          <footer>
+            <p class="pull-right"><a href="#">Back to top</a></p>
+            <p>&copy; 2014 Auburn University &middot; </p>
+          </footer>
+
+        </div><!-- /.container -->
+
+        <!-- Core Javascripts 
+        ====================================================================-->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="/javascripts/jquery.js"></script>
+	<script type="text/javascript" src="/javascripts/jsmpg.js"></script>	
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="/javascripts/bootstrap.min.js"></script>
+        <!-- Controller functionality -->
+        <script src="/javascripts/cardinal_controller.js"></script>
+        <script src="/javascripts/rotational_controller.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            new NodecopterStream(document.getElementById("main-video-feed"));
+        </script>
+
+	<script type="text/javascript" charset="utf-8">	
+		var canvas = document.getElementById('videoCanvas');
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#444';
+		ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
+
+		var client = new WebSocket( 'ws://audrone.eng.auburn.edu:8084/' );
+		var player = new jsmpeg(client, {canvas:canvas});
+	</script>
